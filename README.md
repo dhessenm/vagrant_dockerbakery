@@ -1,4 +1,4 @@
-# vagrant_dockerbackery
+# vagrant_dockerbakery
 Collection of Vagrant provision scripts (shell, ansible) in directory provision.
 
 Collection ob Dockerbuild-Files in directory dockerbuild.
