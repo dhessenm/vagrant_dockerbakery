@@ -17,7 +17,7 @@ cd vagrant_dockerbakery
 vagrant up --provider=vmware_fusion
 ```
 
-## build a Dockerimage
+## Build a Dockerimage
 Log into VM and build a Dockerimage, e.g. an Ansible Dockerimage.
 
 ```
