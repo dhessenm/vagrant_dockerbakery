@@ -28,9 +28,9 @@ vagrant@machine1:~$ /vagrant/provision/dockerbake/bake ansible
 ## Modifications
 It's up to you to make some modifications.
 
-You can change the Vagrant Box to any Ubuntu trusty Vagrant Box, just make sure VMware-Tools HGFS Support works 
+You can change the Vagrant box to any Ubuntu trusty Vagrant box, just make sure VMware-Tools HGFS Support works.
 
-You can uncomment the line in Vagrantfile to automate the Dockerimage build, e.g. build an Ansible Dockerimage directly  with the first `vagrant up`
+You can uncomment the line in Vagrantfile to automate the Dockerimage build, e.g. build an Ansible Dockerimage directly  with the first `vagrant up`.
 ```
 #     machine1_config.vm.provision "shell", path: "provision/dockerbake/bake", args: "ansible"
 ```
