@@ -26,7 +26,7 @@ vagrant@machine1:~$ /vagrant/provision/dockerbake/bake ansible
 ```
 
 ## Modifications
-It's up to you to make some midifications.
+It's up to you to make some modifications.
 
 You can change the Vagrant Box to any Ubuntu trusty Vagrant Box, just make sure VMware-Tools HGFS Support works 
 
