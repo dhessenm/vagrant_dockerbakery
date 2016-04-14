@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+# to dos:
+# check if docker is running and we have permission to use docker
+#
+
+# some functions
+usage(){
+echo "Usage: $0 <dockerimage-name>"
+}
+
+command_exists() {
+	command -v "$@" > /dev/null 2>&1
+}
+
+
+# set variable
+SRCBASEDIR=/vagrant/dockerbakery
+DESTBASEDIR=/home/vagrant/dockerbakery
+REGBASENAME=dockerhub.noncd.rz.db.de/dirkhessenmueller
+
+# check params
+if [ -z "$1" ]; then
+   usage
+   exit 1
+fi
+
+DOCKERPRODUCT=$1
+
+# check if docker is installed
+if ! command_exists docker; then
+   echo "Error: docker command not found, make sure that docker is installed"
+   exit 3
+fi
+
+if [ ! -d ${DESTBASEDIR} ];then
+   mkdir -p ${DESTBASEDIR}
+fi
+
+# echo "Debug: product dir -> ${SRCBASEDIR}/${DOCKERPRODUCT}"
+
+if [ ! -d ${SRCBASEDIR}/${DOCKERPRODUCT} ]; then
+   echo "Error: Can't find Docker product ${DOCKERPRODUCT} in directory ${SRCBASEDIR}"
+   exit 2
+fi
+
+if [ -d ${DESTBASEDIR}/${DOCKERPRODUCT} ]; then
+   echo "Info: Directory ${DESTBASEDIR}/${DOCKERPRODUCT} already exists, we will delete it now"
+   rm -rf ${DESTBASEDIR}/${DOCKERPRODUCT}
+fi
+
+echo "Info: copy ${SRCBASEDIR}/${DOCKERPRODUCT} ${DESTBASEDIR}/${DOCKERPRODUCT}"
+cp -r ${SRCBASEDIR}/${DOCKERPRODUCT} ${DESTBASEDIR}/${DOCKERPRODUCT}
+
+cd ${DESTBASEDIR}/${DOCKERPRODUCT}
+
+# check if dockerfile exist
+if [ ! -f ${DESTBASEDIR}/${DOCKERPRODUCT}/Dockerfile ]; then
+   echo "There's no Dockerfile in ${DESTBASEDIR}/${DOCKERPRODUCT}, exit"
+   exit 4
+fi
+
+echo "Info: Build Docker image ${DOCKERPRODUCT} ..."
+docker build -t ${REGBASENAME}/${DOCKERPRODUCT} .
+
+exit 0
