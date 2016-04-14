@@ -9,7 +9,7 @@ Collection ob Dockerbuild-Files in directory dockerbuild.
 - Ansible 
 
 ## Create Dockerbakery VM
-Create a Ubuntu VM and install Docker daemon and Ansible:
+Create an Ubuntu VM and install Docker daemon and Ansible:
 
 ```
 git clone https://github.com/dhessenm/vagrant_dockerbakery.git
