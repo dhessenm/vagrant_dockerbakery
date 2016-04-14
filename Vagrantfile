@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.verbose = "v"
         ansible.playbook = "provision/ansible/playbook.yml" 
     end
-     machine1_config.vm.provision "shell", path: "provision/dockerbake/bake", args: "ansible"
+#     machine1_config.vm.provision "shell", path: "provision/dockerbake/bake", args: "ansible"
   end
   # End machine1
 
