@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 
 # Install Ansible from source (master)
 RUN apt-get -y update && \
-    apt-get install -y software-properties-common openssh-server sudo && \
+    apt-get install -y software-properties-common openssh-server sudo git && \
     apt-add-repository ppa:ansible/ansible && \
     apt-get -y update && \
     apt-get -y install ansible && \
