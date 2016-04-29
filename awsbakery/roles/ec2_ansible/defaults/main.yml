@@ -1,0 +1,10 @@
+---
+instance_type: t2.micro
+security_group: default_a_in_int_tcp_22
+ami_id: ami-87564feb # Ubuntu AWS Standard
+region: eu-central-1
+keypair: ansible
+count: 1
+vpc_subnet_id: subnet-0fc25e66 # ApplicationAZ1 INT
+
+
