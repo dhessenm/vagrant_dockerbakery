@@ -1,0 +1,10 @@
+# AWS proxy
+export http_proxy="http://webproxy.aws.db.de:8080/"
+export https_proxy="http://webproxy.aws.db.de:8080/"
+
+# zst-100v proxy
+export http_proxy="http://zst-100v.linux.rz.db.de:8080/"
+export https_proxy="http://zst-100v.linux.rz.db.de:8080/"
+
+# no proxy for systel dockerhub
+export no_proxy="dockerhub.noncd.rz.db.de"
