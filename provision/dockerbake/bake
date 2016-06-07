@@ -3,6 +3,12 @@
 # to dos:
 # check if docker is running and we have permission to use docker
 #
+# after run do manual tag
+# docker build -t dockerhub.noncd.rz.db.de/zst/ansible:latest .
+# docker build -t dockerhub.noncd.rz.db.de/zst/ansible:2.0.2.0 .
+#
+# run ansible :
+# docker run -d -p 4422:22 --name ansible dockerhub.noncd.rz.db.de/zst/ansible
 
 # some functions
 usage(){
@@ -17,7 +23,8 @@ command_exists() {
 # set variable
 SRCBASEDIR=/vagrant/dockerbakery
 DESTBASEDIR=/home/vagrant/dockerbakery
-REGBASENAME=dockerhub.noncd.rz.db.de/dirkhessenmueller
+# REGBASENAME=dockerhub.noncd.rz.db.de/dirkhessenmueller
+REGBASENAME=dockerhub.noncd.rz.db.de/zst
 
 # check params
 if [ -z "$1" ]; then
