@@ -1,0 +1,13 @@
+{
+ 	"mysql": {
+ 		"host": "@DBHOST@:@DBPORT@",
+ 		"user": "root",
+ 		"pass": "@PASSWORD@",
+ 		"name": "semaphore"
+ 	},
+ 	"port": "",
+ 	"bugsnag_key": "",
+ 	"tmp_path": "/playbooks",
+ 	"cookie_hash": "cMjZAajUVHPzGyjU4E/zFd+Tf2c4zhca5jlPWR9d/ps=",
+ 	"cookie_encryption": "BgMym+61Cyc5nxCqajjHx6rz89damYIIS4TTBczoDdw="
+ }

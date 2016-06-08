@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SEMAPHORE_TMP_DIR=/playbooks
+TEMPLATE=${SEMAPHORE_TMP_DIR}/semaphore_config.template
+CONFIGFILE=${SEMAPHORE_TMP_DIR}/semaphore_config.json
+SQLFILE=${SEMAPHORE_TMP_DIR}/semaphore.sql
+
+# create semaphore config file from template
+
+# check if DB alive
+echo "check if DB alive"
+until mysqladmin -u root -p"$SEMAPHORE_APP_ENV_MYSQL_ROOT_PASSWORD" --host $SEMAPHORE_APP_PORT_3306_TCP_ADDR --port $SEMAPHORE_APP_PORT_3306_TCP_PORT ping &>/dev/null; do
+  echo -n "."; sleep 1.0
+done
+
+# check if DB semaphore exists
+_ret=$(mysql -u root -p"$SEMAPHORE_APP_ENV_MYSQL_ROOT_PASSWORD" --host $SEMAPHORE_APP_PORT_3306_TCP_ADDR --port $SEMAPHORE_APP_PORT_3306_TCP_PORT -e "show databases like 'semaphore'" | grep semaphore)
+
+echo "Debug _ret: $_ret"
+
+if [[ $_ret == *"semaphore"*  ]]; then
+   echo "Database semaphore exists, skip create database"
+else
+   echo "Create Database semaphore"
+   mysql -u root -p"$SEMAPHORE_APP_ENV_MYSQL_ROOT_PASSWORD" --host $SEMAPHORE_APP_PORT_3306_TCP_ADDR --port $SEMAPHORE_APP_PORT_3306_TCP_PORT < /playbooks/semaphore.sql
+fi
+
+# create semaphore config file
+echo "Create Semaphore configfile"
+
+sed -e "s/@DBHOST@/$SEMAPHORE_APP_PORT_3306_TCP_ADDR/g" $TEMPLATE | sed -e "s/@DBPORT@/$SEMAPHORE_APP_PORT_3306_TCP_PORT/g" | sed -e "s/@PASSWORD@/$SEMAPHORE_APP_ENV_MYSQL_ROOT_PASSWORD/g" > $CONFIGFILE
+
+# start semaphore
+echo "start Semaphore"
+/opt/semaphore -config $CONFIGFILE
+
