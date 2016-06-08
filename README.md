@@ -53,3 +53,6 @@ debug semaphore-app container with interactive docker session:
 docker run -ti --name semaphore-app-debug --rm --link semaphore-db:dockerhub.noncd.rz.db.de/dirkhessenmueller/semaphore-app dockerhub.noncd.rz.db.de/dirkhessenmueller/semaphore-app /bin/bash
 ```
 
+connect to semaphore webapp with user admin and password admin
+
+
