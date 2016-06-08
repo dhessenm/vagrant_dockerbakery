@@ -1,59 +1,56 @@
-FROM ubuntu:14.04
+FROM       centos:centos7
+MAINTAINER Dirk Hessenmueller <dirk.hessenmueller@deutschebahn.com>
 
-# Install Nexus from source (master)
-RUN apt-get -y update && \
-    apt-get install -y software-properties-common openssh-server sudo curl git python-pip && \
-    apt-add-repository ppa:ansible/ansible && \
-    apt-get -y update && \
-    apt-get -y install ansible && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ENV NEXUS_DATA /nexus-data
 
-RUN pip install awscli && \
-    pip install boto
+ENV NEXUS_VERSION 3.0.0-03
 
+ENV JAVA_HOME /opt/java
+ENV JAVA_VERSION_MAJOR 8
+ENV JAVA_VERSION_MINOR 77
+ENV JAVA_VERSION_BUILD 03
 
-# sshd
-RUN mkdir /var/run/sshd
+RUN yum install -y \
+  curl tar \
+  && yum clean all
 
-# create ansible user
-RUN groupadd -g 1001 ansible && \
-    mkdir /app && \
-    useradd -u 1001 -g 1001 -s /bin/bash -c "ansible user" -d /app/ansible -m ansible && \
-    echo "ansible:ansible" | chpasswd
+# install Oracle JRE
+RUN mkdir -p /opt \
+  && curl --fail --silent --location --retry 3 \
+  --header "Cookie: oraclelicense=accept-securebackup-cookie; " \
+  http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/server-jre-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
+  | gunzip \
+  | tar -x -C /opt \
+  && ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JAVA_HOME}
 
-# setup ssh directory
-RUN mkdir /app/ansible/.ssh && \
-    chown ansible:ansible /app/ansible/.ssh && \
-    chmod 700 /app/ansible/.ssh
+# install nexus
+RUN mkdir -p /opt/sonatype/nexus \
+  && curl --fail --silent --location --retry 3 \
+    https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz \
+  | gunzip \
+  | tar x -C /opt/sonatype/nexus --strip-components=1 nexus-${NEXUS_VERSION} \
+  && chown -R root:root /opt/sonatype/nexus 
 
-ADD ansible.cfg /app/ansible/.ansible.cfg
-ADD hosts /app/ansible/hosts
-ADD proxy /app/ansible/proxy
+## configure nexus runtime env
+RUN sed \
+    -e "s|karaf.home=.|karaf.home=/opt/sonatype/nexus|g" \
+    -e "s|karaf.base=.|karaf.base=/opt/sonatype/nexus|g" \
+    -e "s|karaf.etc=etc|karaf.etc=/opt/sonatype/nexus/etc|g" \
+    -e "s|java.util.logging.config.file=etc|java.util.logging.config.file=/opt/sonatype/nexus/etc|g" \
+    -e "s|karaf.data=data|karaf.data=${NEXUS_DATA}|g" \
+    -e "s|java.io.tmpdir=data/tmp|java.io.tmpdir=${NEXUS_DATA}/tmp|g" \
+    -i /opt/sonatype/nexus/bin/nexus.vmoptions
 
-RUN chown ansible:ansible /app/ansible/.ansible.cfg && \
-    chown ansible:ansible /app/ansible/hosts && \
-    chown ansible:ansible /app/ansible/proxy
+RUN useradd -r -u 200 -m -c "nexus role account" -d ${NEXUS_DATA} -s /bin/false nexus
 
-# Add AWS config file
-RUN mkdir /app/ansible/.aws && \
-    chown ansible:ansible /app/ansible/.aws && \
-    chmod 700 /app/ansible/.aws
+VOLUME ${NEXUS_DATA}
 
-ADD config /app/ansible/.aws/config
-RUN chown ansible:ansible /app/ansible/.aws/config
+EXPOSE 8081
+USER nexus
+WORKDIR /opt/sonatype/nexus
 
-# RUN chown ansible:ansible /app/ansible/.ssh/id_rsa && \
-    # chown ansible:ansible /app/ansible/.ssh/id_rsa.pub && \
-    # chmod 600 /app/ansible/.ssh/id_rsa && \
-    # chmod 644 /app/ansible/.ssh/id_rsa.pub && \
+ENV JAVA_MAX_MEM 1200m
+ENV JAVA_MIN_MEM 1200m
+ENV EXTRA_JAVA_OPTS ""
 
-# set sudo for user ansible
-RUN echo '%ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-# set timezone
-ENV TZ=Europe/Berlin
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
-
+CMD bin/nexus run
