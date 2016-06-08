@@ -38,7 +38,18 @@ You can uncomment the line in Vagrantfile to automate the Dockerimage build, e.g
 Have fun!
 
 
+## semaphore start
+First run a Mysql Container
+```
+docker run -d -p=3306:3306 --name semaphore-db -e MYSQL_ROOT_PASSWORD=<your password> mysql
+```
+Then run semaphore-app container and link it with mysql container
+```
+docker run -d -p=3000:3000 --name semaphore-app --link semaphore-db:dockerhub.noncd.rz.db.de/dirkhessenmueller/semaphore-app dockerhub.noncd.rz.db.de/dirkhessenmueller/semaphore-app
+```
 
-
-
+debug semaphore-app container with interactive docker session:
+```
+docker run -ti --name semaphore-app-debug --rm --link semaphore-db:dockerhub.noncd.rz.db.de/dirkhessenmueller/semaphore-app dockerhub.noncd.rz.db.de/dirkhessenmueller/semaphore-app /bin/bash
+```
 
