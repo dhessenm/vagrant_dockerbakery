@@ -19,7 +19,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.cache.auto_detect = false
     config.cache.enable :apt
     config.cache.enable :gem
-    config.cache.enable :pip
   end
 
   # Turn off shared folders
