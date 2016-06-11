@@ -6,7 +6,7 @@
   failed_when: "ansible_distribution_version != '{{ os_version }}'" 
 
 - name: install required packages for docker 
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  apt: name={{ item }} state=present update_cache=yes
   with_items:
     - apt-transport-https
     - ca-certificates

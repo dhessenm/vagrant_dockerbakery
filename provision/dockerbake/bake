@@ -23,8 +23,9 @@ command_exists() {
 # set variable
 SRCBASEDIR=/vagrant/dockerbakery
 DESTBASEDIR=/home/vagrant/dockerbakery
-# REGBASENAME=dockerhub.noncd.rz.db.de/dirkhessenmueller
-REGBASENAME=dockerhub.noncd.rz.db.de/zst
+
+REGBASENAME=dockerhub.noncd.rz.db.de/dirkhessenmueller
+# REGBASENAME=dockerhub.noncd.rz.db.de/zst
 
 # check params
 if [ -z "$1" ]; then

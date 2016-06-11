@@ -1,0 +1,26 @@
+---
+
+- name: Download Semaphore
+  get_url: 
+    url: https://github.com/ansible-semaphore/semaphore/releases/download/v{{ semaphore_version }}/semaphore_linux_amd64
+    dest: /tmp/semaphore_linux_amd64_{{ semaphore_version }}
+    mode: 0440
+
+- name: Semaphore is available
+  copy: 
+    src: /tmp/semaphore_linux_amd64_{{ semaphore_version }}
+    dest: /opt/semaphore
+    owner: root 
+    group: root 
+    mode: 755
+  become: yes
+
+- name: Create a MySQL DB Docker container
+  docker_container:
+    name: mysql
+    image: mysql
+    env: MYSQL_ROOT_PASSWORD=12345678
+    published_ports: 127.0.0.1:3306:3306
+    state: started
+
+
