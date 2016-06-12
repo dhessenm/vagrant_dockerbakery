@@ -10,9 +10,12 @@ echo root:vagrant | chpasswd
 
 SCRIPT
 
+# Begin vagrant configure
+#--------------------------------------------------------------
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "dh/ubuntu-14.04.2"
+
   # load vagrant-cahier if available, reduce some data traffic an time too ...
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
@@ -23,9 +26,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Turn off shared folders
   # config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
-  # config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
 
   # Begin machine1
+  #--------------------------------------------------------------
   config.vm.define "machine1" do |machine1_config|
     machine1_config.vm.hostname = "machine1"
 
@@ -55,6 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #     machine1_config.vm.provision "shell", path: "provision/dockerbake/bake", args: "ansible"
   end
   # End machine1
+  #--------------------------------------------------------------
 
 end
 
