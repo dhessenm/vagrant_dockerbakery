@@ -16,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "dh/ubuntu-14.04.2"
 
-  # load vagrant-cahier if available, reduce some data traffic an time too ...
+  # load vagrant-cahier if available, reduce some data traffic and time too ...
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
     config.cache.auto_detect = false
